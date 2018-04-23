@@ -31,4 +31,4 @@ python greedyAlgorithm.py
 ## Auteurs
 * Max Bijkerk 10627510
 * Steven Schoenmaker 10777679
-* Milou Fuhri Snethlage
+* Milou Fuhri Snethlage 10770747
