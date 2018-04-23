@@ -18,7 +18,7 @@ zo min mogelijk aantal stappen.
 
 ## Aan de slag
 ### Vereisten
-Het programma is geschreven in python3. Er is nog geen requirment file op het moment
+Het programma is geschreven in python3.
 ### Testen
 Om code te draaien:
 ```python
