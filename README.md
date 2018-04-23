@@ -1,9 +1,8 @@
 # programmeer_theorie
-#
-# Max Bijkerk 
-# 
-#
-#
+
+
+
+
 ## Fruitvliegen genoom
 
 Het genoom van dieren die aan elkaar nauw aan elkaar verwant zijn zal meer overeenkomen met elkaar dan dieren die dit niet zijn. 
