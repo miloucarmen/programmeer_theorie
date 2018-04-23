@@ -1,5 +1,9 @@
 # programmeer_theorie
-
+#
+# Max Bijkerk 
+# 
+#
+#
 ## Fruitvliegen genoom
 
 Het genoom van dieren die aan elkaar nauw aan elkaar verwant zijn zal meer overeenkomen met elkaar dan dieren die dit niet zijn. 
@@ -12,3 +16,20 @@ omgekeerd. (4 5 - 3 2 1 6 - 7 9) -> (4 5 - 6 1 2 3 - 7 9) (mutatie tussen streep
 
 De genoom sequentie zal gezien worden als een volgorde van getallen die door een algoritme in een oplopende volgorde geplaatst moet worden in
 zo min mogelijk aantal stappen.
+
+## Aan de slag
+### Vereisten
+Het programma is geschreven in python3. Er is nog geen requirment file op het moment
+### Testen
+Om code te draaien:
+```python
+python bubblesort.py
+```
+```python
+python greedyAlgorithm.py
+```
+
+## Auteurs
+* Max Bijkerk 10627510
+* Steven Schoenmaker 10777679
+* Milou Fuhri Snethlage
