@@ -39,7 +39,7 @@ def Options(genome, method):
     
     if method == "Greedy":
         if deltaPHIbest == 1:
-        return Reverse(genome, bestOneBreakpoint[0], bestOneBreakpoint[1])
+           return Reverse(genome, bestOneBreakpoint[0], bestOneBreakpoint[1])
     else:    
         return options0, options1, options2 
 
