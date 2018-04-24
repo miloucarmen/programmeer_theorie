@@ -28,13 +28,13 @@ def Options(genome, method):
                         if deltaPHIbest  ==  1 and options1 == []:
                             options1 = [i,j]
                 
-                else
+                else: 
                     #print(len(FindBreakpoints(genome)) - len(breakpoints))
                     if deltaPHI == 0:
                         options0.append((i,j))
                     elif deltaPHI == 1:
                         options1.append((i,j))
-                    elif deltaPHI == 2
+                    elif deltaPHI == 2:
                         options2.append((i,j))
     
     if method == "Greedy":
