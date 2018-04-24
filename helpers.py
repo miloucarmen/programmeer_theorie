@@ -89,9 +89,9 @@ def Options(genome, method, breakpoints):
     if method == "Greedy":
 
         # bestonebreak moet worden aangepast en de return gecontroleerd worden
-        if deltaPHIbest == 1:
-           return Reverse(genome, bestOneBreakpoint[0], bestOneBreakpoint[1])
-        return Reverse(genome, options[0][0], options[0][1])
+        if deltaPHIbest == 1 and options1 != null:
+           return Reverse(genome, options1[0], options1[1])
+        return Reverse(genome, options0[0][0], options0[0][1])
     else:
         return options0, options1, options2
 
