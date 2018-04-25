@@ -1,3 +1,5 @@
+import helpers
+
 def main():
 
     # the genome has a length of 25 EXCLUDING the 0 and 26 on the ends.
@@ -7,9 +9,14 @@ def main():
     numberOfMutations = 0
     genome = melanoGenome
 
+
     while genome != mirandaGenome:
         numberOfMutations += 1
-        genome = Mutate(genome)
+
+        breakpoints = helpers.FindBreakpoints(genome)
+
+        genome = helpers.Options(genome, "Greedy", breakpoints)
+
         print(genome)
     print(numberOfMutations)
 

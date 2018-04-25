@@ -10,7 +10,7 @@ def FindBreakpoints(genome):
     return breakpoints
 
 
-def FindBreakpointPositions(breakpoints)
+def FindBreakpointPositions(breakpoints):
     """Finds the indices (positions) of the genes in the genome that
         participate in the breakpoint pairs"""
 
@@ -19,6 +19,8 @@ def FindBreakpointPositions(breakpoints)
         for j in range(0, 2):
             if breakpoints[i][j] not in breakpointPositions:
                 breakpointPositions.append(breakpoints[i][j])
+
+    return breakpointPositions
 
 
 def Reverse(genome, i, j):
@@ -52,9 +54,12 @@ def Options(genome, method, breakpoints):
 
     deltaPHIbest = 0
 
+    breakpointPositions = FindBreakpointPositions(breakpoints)
+    numberOfBreakpoints = len(breakpointPositions)
+
     # execute all possible reverses
-    for i in breakpointsPositions:
-        for j in breakpointsPositions:
+    for i in breakpointPositions:
+        for j in breakpointPositions:
             if i != j and i < j and i >= 1 and j <= 25:
 
                 temporaryGenome = Reverse(genome, i, j)
@@ -69,14 +74,20 @@ def Options(genome, method, breakpoints):
                         if deltaPHI > deltaPHIbest:
                             deltaPHIbest = deltaPHI
                             options0 = []
-                    options0.append((i,j))
+                        options0.append((i,j))
 
-                    # if deltaPHIbest is 2, and a descending strip was found
+                    # check whether a descending strip was found
                     if temporaryGenome[i-1] > temporaryGenome[i] or temporaryGenome[j + 1] < temporaryGenome[j]:
+
+                        # if descending strip has been found and 2 breakpoints
+                        # are eliminated, we've found our best option already!
                         if deltaPHIbest == 2:
                             return temporaryGenome
+
+                        # if descending strip has been found and 1 breakpoint
+                        # can be cancelled, save the option
                         if deltaPHIbest  ==  1 and options1 == []:
-                            options1 = [i,j]
+                            options1.append((i,j))
 
                 elif method == "B&B":
                     if deltaPHI == 0:
@@ -88,101 +99,30 @@ def Options(genome, method, breakpoints):
 
     if method == "Greedy":
 
-        # bestonebreak moet worden aangepast en de return gecontroleerd worden
+        # if best option is to eliminate 1 breakpoint and the strip is descending
+        # do this option
         if deltaPHIbest == 1 and options1 != null:
-           return Reverse(genome, options1[0], options1[1])
+            return Reverse(genome, options1[0], options1[1])
+
+        # otherwise execute the first option available
         return Reverse(genome, options0[0][0], options0[0][1])
+
+    # if method is B&B, return all options
     else:
         return options0, options1, options2
 
 
+def Greedy(genome):
+    """Executes the Greedy algorithm"""
 
+    mirandaGenome = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]
+    numberOfMutations = 0
 
-def ExecuteOptions(breakpointsPositions, deltaPHIbest):
-    """Executes all possible reverses"""
+    while genome != mirandaGenome:
+        numberOfMutations += 1
 
-    options = []
+        breakpoints = FindBreakpoints(genome)
 
-    for i in breakpointsPositions:
-        for j in breakpointsPositions:
-            if i != j and i < j and i >= 1 and j <= 25:
+        genome = Options(genome, "Greedy", breakpoints)
 
-                temporaryGenome = Reverse(genome, i, j)
-
-                numberOfBreakpointsNew = len(FindBreakpoints(temporaryGenome))
-
-                # calculate the difference in PHI, incurred by mutating strip (i,j)
-                deltaPHI = numberOfBreakpoints - numberOfBreakpointsNew
-
-                # if the currently found deltaPHI is larger than deltaPHIbest, clear
-                # options and redefine deltaPHIbest
-                if deltaPHI > deltaPHIbest:
-                    deltaPHIbest = deltaPHI
-                    options = []
-
-                # if the currently found deltaPHI equals deltaPHIbest, append this option
-                # to the option list
-                elif deltaPHI == deltaPHIbest:
-                    options.append((i,j))
-
-
-                # check if a descending strip was found
-                if testGenome[i-1] > testGenome[i] or testGenome[j + 1] < testGenome[j]:
-
-                    # if deltaPHIbest equals 2, we've found our best option already!
-                    if deltaPHIbest == 2:
-                        return testGenome
-
-                    #
-                    if deltaPHIbest  ==  1 and bestOneBreakpoint == []:
-                        bestOneBreakpoint = [i,j]
-
-
-
-def Mutate(genome, method):
-
-    # find the breakpoint pairs
-    breakpoints = FindBreakpoints(genome)
-
-    # calculate the number of breakpoints
-    numberOfBreakpoints = len(breakpoints)
-
-    # find the positions (indices) of the genes participating in the breakpoint pairs
-    breakpointsPositions = FindBreakpointsPositions(breakpoints)
-
-    deltaPHIbest = 0
-    bestOneBreakpoint = []
-
-    ExecuteOptions(breakpointsPositions, deltaPHIbest)
-
-    # execute all possible reverses
-    for i in unique:
-        for j in unique:
-            if i != j and i < j and i >= 1 and j <= 25:
-
-                # calculate the difference in PHI, incurred by mutating strip (i,j)
-                deltaPHI = CalcDeltaPHI(genome, i, j, numberOfBreakpoints)
-
-                if deltaPHI >= deltaPHIbest:
-                    if deltaPHI > deltaPHIbest:
-                        deltaPHIbest = deltaPHI
-                        options = []
-                    options.append((i,j))
-
-                # print(options)
-                # print(deltaPHIbest)
-
-                # if deltaPHIbest is 2, and a descending strip was found
-                if testGenome[i-1] > testGenome[i] or testGenome[j + 1] < testGenome[j]:
-                    if deltaPHIbest == 2:
-                        return testGenome
-                    if deltaPHIbest  ==  1 and bestOneBreakpoint == []:
-                        bestOneBreakpoint = [i,j]
-
-    # als er geen deltaPHIbest == 2 is gevonden, maar wel een descending order bij deltaPHIbest == 1
-    if deltaPHIbest == 1:
-        return Reverse(genome, bestOneBreakpoint[0], bestOneBreakpoint[1])
-
-
-    # if deltaPHIbest is 1 or 2, but no descending strip was found. Get the first one, because why not? All options in 'option' have deltaPHI == 2.
-    return Reverse(genome, options[0][0], options[0][1])
+    return numberOfMutations
