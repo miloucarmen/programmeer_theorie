@@ -36,7 +36,7 @@ def Reverse(genome, i, j):
 def Mutate(genome):
 
     breakpoints = FindBreakpoints(genome)
-
+    
     # find the breakpoint positions
     unique = []
     for i in range(0, len(breakpoints)):
@@ -88,3 +88,6 @@ def Mutate(genome):
 if __name__ == "__main__":
     main()
     # i moet altijd >= 1 en j moet altijd <= 25!
+
+# er zijn 17 breakpoints binnen het genoom hoe vaak doe je een swap die twee breakpoint weg haalt. 
+# Ze gaan er vanuit dat elke stap 2 breakpoints weg haalt vandaar gedeeld door. 
