@@ -9,19 +9,18 @@ mirandaGenome = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,2
 
 
 def BnB(genome, depth, bound):
-    print(depth, bound)
-    print(genome)
+
     if genome == mirandaGenome:
         if depth < bound:
             bound, best = depth, current
     else:
         breakpoints = helpers.FindBreakpoints(genome)
-        print(breakpoints)
+
         for options in helpers.Options(genome, "B&B", breakpoints):
             for option in options:
+
                 if int(helpers.Greedy(helpers.Reverse(genome, option[0], option[1])) / 2) + depth + 1 < bound:
                     current[depth + 1] = (option[0], option[1])
-                    print(current)
                     BnB(helpers.Reverse(genome, option[0], option[1]), depth + 1, bound)
     return bound, best
 

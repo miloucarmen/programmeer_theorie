@@ -1,24 +1,24 @@
 
-def FindBreakpoints(genome):
+def FindBreakpointPairs(genome):
     """Finds all breakpoint pairs in a given genome"""
 
-    breakpoints = []
+    breakpointPairs = []
     for i in range(0, len(genome) - 1):
         if abs(genome[i] - genome[i + 1]) != 1:
-            breakpoints.append((i, i + 1))
+            breakpointPairs.append((i, i + 1))
 
-    return breakpoints
+    return breakpointPairs
 
 
-def FindBreakpointPositions(breakpoints):
+def FindBreakpointPositions(breakpointPairs):
     """Finds the indices (positions) of the genes in the genome that
         participate in the breakpoint pairs"""
 
     breakpointPositions = []
-    for i in range(0, len(breakpoints)):
+    for i in range(0, len(breakpointPairs)):
         for j in range(0, 2):
-            if breakpoints[i][j] not in breakpointPositions:
-                breakpointPositions.append(breakpoints[i][j])
+            if breakpointPairs[i][j] not in breakpointPositions:
+                breakpointPositions.append(breakpointPairs[i][j])
 
     return breakpointPositions
 
@@ -55,7 +55,7 @@ def Options(genome, method, breakpoints):
     deltaPHIbest = 0
 
     breakpointPositions = FindBreakpointPositions(breakpoints)
-    numberOfBreakpoints = len(breakpointPositions)
+    numberOfBreakpoints = len(FindBreakpointPairs(genome))
 
     # execute all possible reverses
     for i in breakpointPositions:
@@ -64,11 +64,13 @@ def Options(genome, method, breakpoints):
 
                 temporaryGenome = Reverse(genome, i, j)
 
-                numberOfBreakpointsNew = len(FindBreakpoints(temporaryGenome))
+                numberOfBreakpointsNew = len(FindBreakpointPairs(temporaryGenome))
 
                 # calculate the difference in PHI, incurred by mutating strip (i,j)
                 deltaPHI = numberOfBreakpoints - numberOfBreakpointsNew
 
+                print(deltaPHI)
+                print(genome)
                 if method == "Greedy":
                     if deltaPHI >= deltaPHIbest:
                         if deltaPHI > deltaPHIbest:
@@ -101,8 +103,8 @@ def Options(genome, method, breakpoints):
 
         # if best option is to eliminate 1 breakpoint and the strip is descending
         # do this option
-        if deltaPHIbest == 1 and options1 != null:
-            return Reverse(genome, options1[0], options1[1])
+        if deltaPHIbest == 1 and options1 != None:
+            return Reverse(genome, options1[0][0], options1[0][1])
 
         # otherwise execute the first option available
         return Reverse(genome, options0[0][0], options0[0][1])
@@ -121,7 +123,7 @@ def Greedy(genome):
     while genome != mirandaGenome:
         numberOfMutations += 1
 
-        breakpoints = FindBreakpoints(genome)
+        breakpoints = FindBreakpointPairs(genome)
 
         genome = Options(genome, "Greedy", breakpoints)
 
