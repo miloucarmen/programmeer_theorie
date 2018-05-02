@@ -50,9 +50,11 @@ def Mutate(genome, method):
 
     # declare arrays that store the breakpoint pairs that, when reversed,
     # eliminate either 0, 1, or 2 breakpoints in the genome
-    #eliminate_0_breakpoints = []
-    #eliminate_1_breakpoints = []
-    #eliminate_2_breakpoints = []
+    eliminate_0_breakpoints = []
+    eliminate_1_breakpoints = []
+    eliminate_2_breakpoints = []
+    eliminate_min_1_breakpoints = []
+    eliminate_min_2_breakpoints = []
 
     # declare an array that stores the options there are to mutate a gene
     # in the form ( i, j, deltaPHI, descending(T/F) )
@@ -73,7 +75,7 @@ def Mutate(genome, method):
     # execute all possible reverses
     for i in breakpointPositions:
         for j in breakpointPositions:
-            if i != j and i < j and i >= 1 and j <= 25:
+            if i != j and i < j and i >= 1 and j <= len(genome) - 2:
 
                 # execute every possible reverse and store the mutated genome
                 # in temporaryGenome
@@ -130,6 +132,20 @@ def Mutate(genome, method):
                             else:
                                 mutateOptions.append((i, j, deltaPHI, False))
 
+                        if deltaPHI == 0:
+
+                            # check whether a descending strip was found
+                            if temporaryGenome[i - 1] > temporaryGenome[i] or temporaryGenome[j] > temporaryGenome[j + 1]:
+
+                                # if so, store the option and continue revising the
+                                # other options
+                                mutateOptions.append((i, j, deltaPHI, True))
+
+                            # if not descending, store the option and continue revising the
+                            # other options
+                            else:
+                                mutateOptions.append((i, j, deltaPHI, False))
+
                 elif method == "B&B":
                     if deltaPHI == 0:
                         eliminate_0_breakpoints.append((i,j))
@@ -137,6 +153,10 @@ def Mutate(genome, method):
                         eliminate_1_breakpoints.append((i,j))
                     elif deltaPHI == 2:
                         eliminate_2_breakpoints.append((i,j))
+                    # elif deltaPHI == -1:
+                    #     eliminate_min_1_breakpoints.append((i,j))
+                    # elif deltaPHI == -2:
+                    #     eliminate_min_2_breakpoints.append((i,j))
 
     # when all possible reverses are reviewed, let's see what we should do
     if method == "Greedy":
@@ -144,6 +164,7 @@ def Mutate(genome, method):
         # sort the mutateOptions array on deltaPHI. Using this sort method,
         # the lowest deltaPHIs come first (minimum 1) with FALSE booleans for
         # 'descending'.
+
         mutateOptions = sorted(mutateOptions, key = lambda x: (x[2], x[3]))
 
         # therefore, the array should be reversed
@@ -158,20 +179,21 @@ def Mutate(genome, method):
 # ----------- HIER MOET NOG NAAR GEKEKEN WORDEN. DIT IS VOOR DE B&B -----------
     # if method is B&B, return all options
     else:
-        return eliminate_0_breakpoints, eliminate_1_breakpoints, eliminate_2_breakpoints
+        return eliminate_2_breakpoints, eliminate_1_breakpoints#, eliminate_0_breakpoints#, eliminate_min_1_breakpoints, eliminate_min_2_breakpoints
 
 # ----------- HIER MOET NOG NAAR GEKEKEN WORDEN. DIT IS VOOR DE B&B -----------
 def Greedy(genome):
     """Executes the Greedy algorithm"""
-
-    mirandaGenome = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]
+    mirandaGenome = [i for i in range(len(genome))]
+    # mirandaGenome = [0,1,2,3,4]
     numberOfMutations = 0
 
     while genome != mirandaGenome:
         numberOfMutations += 1
-
-        breakpoints = FindBreakpointPairs(genome)
-
-        genome = Options(genome, "Greedy", breakpoints)
+        genome = Mutate(genome, "Greedy")
 
     return numberOfMutations
+
+def LowBound(genome):
+    breakpoints = FindBreakpointPairs(genome)
+    return int(len(breakpoints) / 2)
