@@ -41,11 +41,6 @@ class GenomeSequence:
 
 
         # als sort te langzaam is, hier oplossen 
-        temp =  self.breakPointsList[i - 1][1] = j
-        self.breakPointsList[j + 1][0] = i
-        tempVar = self.breakPointsList[i][0]
-        self.breakPointsList[i][0] = self.breakPointsList[j][1]
-        self.breakPointsList[j][1] = tempVar
         self.breakPointsList[i - 1][1] = j
         self.breakPointsList[j + 1][0] = i
         tempVar = self.breakPointsList[i][0]
@@ -57,11 +52,9 @@ class GenomeSequence:
         if abs(self.breakPointsList[j] - self.breakPointsList[j + 1]) != 1:
             newPHITwo = 1
 
-        # if oldPHIOne - newPHIOne == 1:
-        
+        if oldPHIOne - newPHIOne == 1:
+            
 
-
-        
         return sum(oldPHIOne, oldPhiTwo) - sum(newPHIOne, newPhiTwo)
         
 
