@@ -10,8 +10,6 @@ def main():
 
 
 
-
-
 def bubblesort(genoom):
 
     gesorteerdDeel = 1
