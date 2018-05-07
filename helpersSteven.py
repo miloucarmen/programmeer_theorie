@@ -32,36 +32,37 @@ class GenomeSequence:
 
 
     def updateBreakpoints(self, i, j):
-        oldPHIOne, oldPhiTwo, oldPhiThree, oldPHIFour, newPHIOne, newPhiTwo, newPhiThree, newPHIFour = 0
+        oldPHIOne, oldPhiTwo, newPHIOne, newPhiTwo = 0
 
-        if abs(self.breakPointsList[i] - self.breakPointsList[i + 1]) != 1:
-            oldPHIOne = 1
         if abs(self.breakPointsList[i] - self.breakPointsList[i - 1]) != 1:
+            oldPHIOne = 1
+        if abs(self.breakPointsList[j] - self.breakPointsList[j + 1]) != 1:
             oldPHITwo = 1
-        if abs(self.breakPointsList[j] - self.breakPointsList[i + 1]) != 1:
-            oldPHIThree = 1
-        if abs(self.breakPointsList[j] - self.breakPointsList[i - 1]) != 1:
-            oldPHIFour = 1
+
 
         # als sort te langzaam is, hier oplossen 
+        temp =  self.breakPointsList[i - 1][1] = j
+        self.breakPointsList[j + 1][0] = i
+        tempVar = self.breakPointsList[i][0]
+        self.breakPointsList[i][0] = self.breakPointsList[j][1]
+        self.breakPointsList[j][1] = tempVar
         self.breakPointsList[i - 1][1] = j
         self.breakPointsList[j + 1][0] = i
         tempVar = self.breakPointsList[i][0]
         self.breakPointsList[i][0] = self.breakPointsList[j][1]
         self.breakPointsList[j][1] = tempVar
 
-        if abs(self.breakPointsList[i] - self.breakPointsList[i + 1]) != 1:
-            newPHIOne = 1
         if abs(self.breakPointsList[i] - self.breakPointsList[i - 1]) != 1:
+            newPHIOne = 1
+        if abs(self.breakPointsList[j] - self.breakPointsList[j + 1]) != 1:
             newPHITwo = 1
-        if abs(self.breakPointsList[j] - self.breakPointsList[i + 1]) != 1:
-            newPHIThree = 1
-        if abs(self.breakPointsList[j] - self.breakPointsList[i - 1]) != 1:
-            newPHIFour = 1
 
-        if oldPHIOne - newPHIOne == 1:
-            
-        return sum(oldPHIOne, oldPhiTwo, oldPhiThree, oldPHIFour) - sum(newPHIOne, newPhiTwo, newPhiThree, newPHIFour)
+        # if oldPHIOne - newPHIOne == 1:
+        
+
+
+        
+        return sum(oldPHIOne, oldPhiTwo) - sum(newPHIOne, newPhiTwo)
         
 
     def Reverse(self, genome, i, j):
