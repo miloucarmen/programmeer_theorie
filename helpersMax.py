@@ -1,9 +1,10 @@
+# we moeten in de presentatie goed onderbouwen dat een strip doorbreken NOOIT goed is, ik twijfel hierover? 
 
 def FindBreakpointPairs(genome):
     """Finds all breakpoint pairs in a given genome"""
 
     breakpointPairs = []
-    for i in range(0, len(genome) - 1):
+    for i in range(len(genome) - 1):
         if abs(genome[i] - genome[i + 1]) != 1:
             breakpointPairs.append((i, i + 1))
 
@@ -15,13 +16,12 @@ def FindBreakpointPositions(breakpointPairs):
         participate in the breakpoint pairs"""
 
     breakpointPositions = []
-    for i in range(0, len(breakpointPairs)):
-        for j in range(0, 2):
+    for i in range(len(breakpointPairs)):
+        for j in range(2):
             if breakpointPairs[i][j] not in breakpointPositions:
                 breakpointPositions.append(breakpointPairs[i][j])
 
     return breakpointPositions
-
 
 def Reverse(genome, i, j):
     """Reverses a strip with begin index i and end index j in a given genome"""
@@ -179,7 +179,7 @@ def Mutate(genome, method):
 # ----------- HIER MOET NOG NAAR GEKEKEN WORDEN. DIT IS VOOR DE B&B -----------
     # if method is B&B, return all options
     else:
-        return eliminate_2_breakpoints, eliminate_1_breakpoints#, eliminate_0_breakpoints#, eliminate_min_1_breakpoints, eliminate_min_2_breakpoints
+        return eliminate_2_breakpoints, eliminate_1_breakpoints, eliminate_0_breakpoints, eliminate_min_1_breakpoints, eliminate_min_2_breakpoints
 
 # ----------- HIER MOET NOG NAAR GEKEKEN WORDEN. DIT IS VOOR DE B&B -----------
 def Greedy(genome):

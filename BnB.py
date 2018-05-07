@@ -17,29 +17,31 @@ print(melanoGenome)
 # grafiek maken met verschillende lengtes van melanoGenome -> line op fitten met voorspellingen kijken of of klopt
 # verschillende breakpoints in de grafiek? -> difficulty? 
 # branch and bound combi met beam search -> ipv checken naar oplossing, checken voor 2 of 3 lagen buiten oplossing? 
+# beam search met voorafbepaalde state space 
 # bound vanaf 0 en dan omhoog?
 def BnB(genome, depth, bound, current, best):
     if genome == mirandaGenome:
 
         if depth <= bound:
+            best = []
             bound, best = depth, current
             print(bound)
             print(best)
             return bound, current, best
     else:
-        breakpoints = helpersMax.FindBreakpointPairs(genome)
         #checken of 0 moves hier lang duren
-
         for options in helpersMax.Mutate(genome, "B&B"):
             for option in options:
+                lowBound = int(helpersMax.LowBound(helpersMax.Reverse(genome, option[0], option[1]))) + depth + 1
+
                 # voor de bound tellen hoeveel 1 moves er worden gemaakt in de greedy, dit laat de maximum improvement zien
                 # als je altijd 1 breakpoint weghaalt is de lower bound / 2 (hierom dus die / 2)
-                if int(helpersMax.LowBound(helpersMax.Reverse(genome, option[0], option[1]))) + depth + 1 < bound: 
+                if lowBound < bound: 
                     current[depth] = (option[0], option[1])
                     bound, current, best = BnB(helpersMax.Reverse(genome, option[0], option[1]), depth + 1, bound, current, best)
         return bound, current, best
 # get the upper bound from Greedy
 bound = helpersMax.Greedy(melanoGenome)
 print(bound)
-BnB(melanoGenome, 0, 13, current, best)
+BnB(melanoGenome, 0, 15, current, best)
 print(melanoGenome)
