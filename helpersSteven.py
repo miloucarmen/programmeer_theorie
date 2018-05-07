@@ -8,7 +8,7 @@ class GenomeSequence:
     def createBreakpointList(self, genome):
 
         # neighbouringNumbers stores the pair of neighbouring numbers for each gen in a given genome
-        neighbouringNumbers = [[0, 0]] * (len(genome) + 1)
+        #neighbouringNumbers = [(0, 0)] * (len(genome) + 1)
 
         # breakpointPairs stores all breakpoint pairs in a given genome"""
         breakpointPairs = []
@@ -21,6 +21,9 @@ class GenomeSequence:
         Is = []
         Js = []
 
+        # declare an offset for the index i
+        offSet = 0
+
         for i in range(len(genome) + 1):
             print("i equals: ", i)
 
@@ -28,7 +31,7 @@ class GenomeSequence:
             if i == 0:
 
                 # only change the 1st element, because 0th already is 0
-                neighbouringNumbers[i][1] = genome[i + 1]
+                #neighbouringNumbers[i][1] = genome[i + 1]
 
                 # IF a breakpoint, store the breakpoint's information
                 if genome[i + 1] != 1:
@@ -37,17 +40,20 @@ class GenomeSequence:
                     breakpointPositions.append(genome[i + 1])
                     Is.append(i + 1)
 
+                # if not a breakpoint, add one from the offset
+                else:
+                    offSet += 1
+
             # for the last element considered
-            elif i == len(genome):
+            #elif i == len(genome) - 1:
 
                 # only change the 0th element, because 1st already is 0
-                neighbouringNumbers[i][0] = genome[i - 1]
+                #neighbouringNumbers[i][0] = genome[i - 1]
 
             # for all other elements
             else:
-
                 # store the neighbouring elements
-                neighbouringNumbers[i] = [genome[i - 1], genome[i + 1]]
+                #neighbouringNumbers[i] = [genome[i - 1], genome[i + 1]]
 
                 # check if a breakpoint
                 if abs(genome[i] - genome[i + 1]) != 1:
@@ -60,10 +66,17 @@ class GenomeSequence:
                     breakpointPairs.append((i, i + 1))
                     for j in range(2):
                         print("i equals: ", i, "j equals: ", j)
-                        if breakpointPairs[i][j] not in breakpointPositions:
-                            breakpointPositions.append(breakpointPairs[i][j])
+                        print(breakpointPairs)
 
-        return neighbouringNumbers, breakpointPairs, breakpointPositions, Is, Js
+                        # here we use the offSet
+                        if breakpointPairs[i - offSet][j] not in breakpointPositions:
+                            breakpointPositions.append(breakpointPairs[i - offSet][j])
+
+                # if not a breakpoint, add one from the offset
+                else:
+                    offSet += 1
+
+        return breakpointPairs, breakpointPositions, Is, Js #, neighbouringNumbers
 
 
 
