@@ -3,7 +3,7 @@ class GenomeSequence:
     def __init__(self, genome):
         self.genome = genome
         # self.breakpointPairs eigenlijk overbodig, maar gaat nog handig zijn bij die 2x sneller comment?
-        self.neighbouringNumbers, self.breakpointPairs, self.breakpointPostions, self.Is, self.Js = self.createBreakpointList(genome)
+        self.breakpointPairs, self.breakpointPostions, self.Is, self.Js = self.createBreakpointList(genome)
 
     def createBreakpointList(self, genome):
 
@@ -47,6 +47,7 @@ class GenomeSequence:
         print("I's: ", Is)
         print("J's: ", Js)
         return breakpointPairs, breakpointPositions, Is, Js #, neighbouringNumbers
+
 
 
     def CheckPHI(self, i, j):
