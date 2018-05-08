@@ -8,4 +8,8 @@ print("Element 26 equals: ", genome[26])
 
 genome = helpersSteven.GenomeSequence(genome)
 
+temp = genome.Reverse(0,1)
+print(genome.Reverse(0,0))
+print(temp)
+
 
