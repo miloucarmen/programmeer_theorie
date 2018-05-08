@@ -33,7 +33,6 @@ class GenomeSequence:
                 # add the breakpoint pair to the list
                 breakpointPairs.append((i, i + 1))
 
-
                 # check if the breakpoint position is already stored. If not, add it to the
                 # breakpointPositions list
                 if breakpointPairs[len(breakpointPairs) - 1][0] not in breakpointPositions:
@@ -52,20 +51,28 @@ class GenomeSequence:
         return breakpointPairs, breakpointPositions, Is, Js #, neighbouringNumbers
 
 
-    def CheckPHI(self, i, j):
-        oldPHIOne, oldPhiTwo, newPHIOne, newPhiTwo = 0
+    def CalcDeltaPHI(self, i, j):
 
-        if abs(genome[i - 1] - genome[i]) != 1:
-            oldPHIOne = 1
-        if abs(genome[j + 1] - genome[j]) != 1:
-            oldPHITwo = 1
+        # define bools to check if breakpoints are eliminated
+        eliminatedLeftBreakpoint = False
+        eliminatedRightBreakpoint = False
 
-        if abs(genome[i - 1] - genome[j]) != 1:
-            newPHIOne = 1
-        if abs(genome[j + 1] - genome[i]) != 1:
-            newPHITwo = 1
+        # check if left breakpoint will be eliminated when reversing with
+        # indices i and j
+        if abs(self.genome[i - 1] - self.genome[j]) == 1:
+            eliminatedLeftBreakpoint = True
 
-        return sum(oldPHIOne, oldPhiTwo) - sum(newPHIOne, newPhiTwo)
+        # check if right breakpoint will be eliminated when reversing with
+        # indices i and j
+        if abs(self.genome[j + 1] - self.genome[i]) == 1:
+            eliminatedRightBreakpoint = True
+
+        print(eliminatedLeftBreakpoint + eliminatedRightBreakpoint)
+
+        # return the sum of the bools to get the total number of breakpoints
+        # that will be eliminated when reversing with indices i and j (this number will
+        # always be either 0, 1 or 2)
+        return eliminatedLeftBreakpoint + eliminatedRightBreakpoint
 
 
     def Reverse(self, i, j):
@@ -113,7 +120,7 @@ class GenomeSequence:
                     # in temporaryGenome and calculate the difference in PHI, incurred by the current mutation,
                     # that is: mutating strip (i,j)
                     temporaryGenome = self.Reverse(genome, i, j)
-                    deltaPHI = self.CheckPHI(i, j)
+                    deltaPHI = self.CalcDeltaPHI(i, j)
 
                     if method == "Greedy":
 

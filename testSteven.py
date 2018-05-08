@@ -7,9 +7,19 @@ print("Element 0 equals: ", genome[0])
 print("Element 26 equals: ", genome[26])
 
 genome = helpersSteven.GenomeSequence(genome)
+Is = genome.Is
+Js = genome.Js
 
 temp = genome.Reverse(0,1)
-print(genome.Reverse(0,0))
-print(temp)
+print("The original genome is: ", genome.Reverse(0,0))
+print("The temporary genome is: ", temp)
+
+
+for i in Is:
+    for j in Js:
+        if i != j and i < j and i >= 1 and j <= len(genome.genome) - 2:
+            genome.CheckPHI(i, j)
+
+
 
 
