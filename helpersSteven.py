@@ -215,6 +215,20 @@ class GenomeSequence:
         else:
             return eliminate_2_breakpoint, eliminate_1_breakpoint, eliminate_0_breakpoint, eliminate_min_1_breakpoint, eliminate_min_2_breakpoint
 
+
+     def Update(self, genome, i, j):
+        # breakpointPairs, self.breakpointPostions, self.Is, self.Js = self.createBreakpointList(genome)
+        mutatedGenome = self.Mutate(genome, i, j)
+        # ittereerd door breakpoints 
+        for q in range(j + 1):
+            if self.breakpointPostions[q] > i and self.breakpointPostions[q] < j:
+                # veranderd breakpointpostions naar hun nieuwe locatie
+                self.breakpointPostions[q]  = j - q + i
+            if self.breakpointPostions[q] == i:
+                if abs(mutatedGenome[i-1] - mutatedGenome[i-2]) == 1 and abs(mutatedGenome[i] - mutatedGenome[i - 1]) == 1:
+                    self.breakpointPostions.remove[q - 1]
+
+
     # ----------- HIER MOET NOG NAAR GEKEKEN WORDEN. DIT IS VOOR DE B&B -----------
     def Greedy(self, genome):
         """Executes the Greedy algorithm"""
