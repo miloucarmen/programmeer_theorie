@@ -1,9 +1,12 @@
 # we moeten in de presentatie goed onderbouwen dat een strip doorbreken NOOIT goed is, ik twijfel hierover?
 class GenomeSequence:
+
     def __init__(self, genome):
+
         self.genome = genome
-        # self.breakpointPairs eigenlijk overbodig, maar gaat nog handig zijn bij die 2x sneller comment?
-        self.neighbouringNumbers, self.breakpointPairs, self.breakpointPostions, self.Is, self.Js = self.createBreakpointList(genome)
+
+        # execute createBreakpointlist when initializing
+        self.breakpointPairs, self.breakpointPostions, self.Is, self.Js = self.createBreakpointList(genome)
 
     def createBreakpointList(self, genome):
 
@@ -65,24 +68,23 @@ class GenomeSequence:
         return sum(oldPHIOne, oldPhiTwo) - sum(newPHIOne, newPhiTwo)
 
 
-    def Reverse(self, genome, i, j):
+    def Reverse(self, i, j):
         """Reverses a strip with begin index i and end index j in a given genome"""
 
         # the first piece of the genome
-        genomeStart = genome[0 : i]
+        genomeStart = self.genome[0 : i]
 
         # the to be mutated part in the genome
-        genomeMutation = genome[i : j + 1]
+        genomeMutation = self.genome[i : j + 1]
 
         # the to be mutated part reversed
         genomeMutated = list(reversed(genomeMutation))
 
         # the ending part of the genome
-        genomeEnd = genome[j + 1 : len(genome)]
+        genomeEnd = self.genome[j + 1 : len(self.genome)]
 
-        deltaPHI = self.updateBreakpoints(i, j)
         # return the mutated genome
-        return genomeStart + genomeMutated + genomeEnd, deltaPHI
+        return genomeStart + genomeMutated + genomeEnd
 
 
     def Mutate(self, genome, method):
