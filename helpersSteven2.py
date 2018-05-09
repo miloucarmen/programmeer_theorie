@@ -1,67 +1,89 @@
 # we moeten in de presentatie goed onderbouwen dat een strip doorbreken NOOIT goed is, ik twijfel hierover?
 class GenomeSequence:
-
     def __init__(self, genome):
-
         self.genome = genome
-        # execute createBreakpointlist when initializing
-        self.Is, self.Js = self.createBreakpointList(genome)
+        # self.breakpointPairs eigenlijk overbodig, maar gaat nog handig zijn bij die 2x sneller comment?
+        self.breakpointPairs, self.breakpointPostions, self.Is, self.Js = self.createBreakpointList(genome)
 
     def createBreakpointList(self, genome):
+
+        # neighbouringNumbers stores the pair of neighbouring numbers for each gen in a given genome
+        #neighbouringNumbers = [(0, 0)] * (len(genome) + 1)
+
+        # breakpointPairs stores all breakpoint pairs in a given genome"""
+        breakpointPairs = []
+
+        # breakpointPositions stores the indices (positions) of the genes in the genome that
+        # participate in the breakpoint pairs
+        breakpointPositions = []
+
         # declare arrays that store indices that may be an i or a j
         Is = []
         Js = []
 
         for i in range(len(genome) - 1):
+            print("i equals: ", i)
+
             # check if breakpoint
             if abs(genome[i] - genome[i + 1]) != 1:
+
+                # add the breakpoint pair to the list
+                breakpointPairs.append((i, i + 1))
+
+
+                # check if the breakpoint position is already stored. If not, add it to the
+                # breakpointPositions list
+                if breakpointPairs[len(breakpointPairs) - 1][0] not in breakpointPositions:
+                    breakpointPositions.append(i)
+                if breakpointPairs[len(breakpointPairs) - 1][1] not in breakpointPositions:
+                    breakpointPositions.append(i + 1)
+
                 # specify what may be a possible i or j
                 Js.append(i)
                 Is.append(i + 1)
 
-        # print("I's: ", Is)
-        # print("J's: ", Js)
-        return Is, Js 
-
-    def CalcDeltaPHI(self, i, j):
-
-        # define bools to check if breakpoints are eliminated
-        eliminatedLeftBreakpoint = False
-        eliminatedRightBreakpoint = False
-
-        # check if left breakpoint will be eliminated when reversing with
-        # indices i and j
-        if abs(self.genome[i - 1] - self.genome[j]) == 1:
-            eliminatedLeftBreakpoint = True
-
-        # check if right breakpoint will be eliminated when reversing with
-        # indices i and j
-        if abs(self.genome[j + 1] - self.genome[i]) == 1:
-            eliminatedRightBreakpoint = True
-
-        # return the sum of the bools to get the total number of breakpoints
-        # that will be eliminated when reversing with indices i and j (this number will
-        # always be either 0, 1 or 2)
-        return eliminatedLeftBreakpoint + eliminatedRightBreakpoint
+        print("breakpointPairs: ", breakpointPairs)
+        print("breakpointPositions: ", breakpointPositions)
+        print("I's: ", Is)
+        print("J's: ", Js)
+        return breakpointPairs, breakpointPositions, Is, Js #, neighbouringNumbers
 
 
-    def Reverse(self, i, j):
+
+    def CheckPHI(self, i, j):
+        oldPHIOne, oldPhiTwo, newPHIOne, newPhiTwo = 0
+
+        if abs(genome[i - 1] - genome[i]) != 1:
+            oldPHIOne = 1
+        if abs(genome[j + 1] - genome[j]) != 1:
+            oldPHITwo = 1
+
+        if abs(genome[i - 1] - genome[j]) != 1:
+            newPHIOne = 1
+        if abs(genome[j + 1] - genome[i]) != 1:
+            newPHITwo = 1
+
+        return sum(oldPHIOne, oldPhiTwo) - sum(newPHIOne, newPhiTwo)
+
+
+    def Reverse(self, genome, i, j):
         """Reverses a strip with begin index i and end index j in a given genome"""
 
         # the first piece of the genome
-        genomeStart = self.genome[0 : i]
+        genomeStart = genome[0 : i]
 
         # the to be mutated part in the genome
-        genomeMutation = self.genome[i : j + 1]
+        genomeMutation = genome[i : j + 1]
 
         # the to be mutated part reversed
         genomeMutated = list(reversed(genomeMutation))
 
         # the ending part of the genome
-        genomeEnd = self.genome[j + 1 : len(self.genome)]
+        genomeEnd = genome[j + 1 : len(genome)]
 
+        deltaPHI = self.updateBreakpoints(i, j)
         # return the mutated genome
-        return genomeStart + genomeMutated + genomeEnd
+        return genomeStart + genomeMutated + genomeEnd, deltaPHI
 
 
     def Mutate(self, genome, method):
@@ -89,8 +111,8 @@ class GenomeSequence:
                     # execute every possible reverse and store the mutated genome
                     # in temporaryGenome and calculate the difference in PHI, incurred by the current mutation,
                     # that is: mutating strip (i,j)
-                    temporaryGenome = self.Reverse(i, j)
-                    deltaPHI = self.CalcDeltaPHI(i, j)
+                    temporaryGenome = self.Reverse(genome, i, j)
+                    deltaPHI = self.CheckPHI(i, j)
 
                     if method == "Greedy":
 
@@ -176,51 +198,16 @@ class GenomeSequence:
 
             # execute the first posssible option, because this is now the best one!
             # (because descending options come first in the array)
-            return self.Reverse(mutateOptions[0][0], mutateOptions[0][1])
+            return self.Reverse(genome, mutateOptions[0][0], mutateOptions[0][1])
 
 
 
+    # ----------- HIER MOET NOG NAAR GEKEKEN WORDEN. DIT IS VOOR DE B&B -----------
         # if method is B&B, return all options
         else:
-            return eliminate_2_breakpoint, eliminate_1_breakpoint, eliminate_0_breakpoint#, eliminate_min_1_breakpoint, eliminate_min_2_breakpoint
+            return eliminate_2_breakpoint, eliminate_1_breakpoint, eliminate_0_breakpoint, eliminate_min_1_breakpoint, eliminate_min_2_breakpoint
 
-    def UpdateIandJ(self, i, j):
-        for k in self.Is[self.Is.index(i):]:
-            if k > i:
-                self.Js.append(k)
-                self.Is.remove(k)
-            elif k == self.Js.index(j):
-                break
-
-        for l in self.Js[self.Is.index(i):]:
-            if l > i:
-                self.Is.append(l)
-                self.Js.remove(l)
-            elif l == self.Js.index(j):
-                break
-
-        for m in [i - 1, i, j, j + 1]:
-            if abs(self.genome[m - 1] - self.genome[m]) == 1:
-                if m in self.Is:
-                    self.Is.remove(m)
-                if m - 1 in self.Js:
-                    self.Js.remove(m - 1)
-            else:
-                self.Js.append(m - 1)
-                self.Is.append(m)
-
-            if abs(self.genome[m + 1] - self.genome[m]) == 1:
-                if m + 1 in self.Is:
-                    self.Is.remove(m + 1)
-                if m in self.Js:
-                    self.Js.remove(m)
-            else:
-                self.Js.append(m)
-                self.Is.append(m + 1)
-
-        self.Is = list(set(self.Is))
-        self.Js = list(set(self.Js))
-
+    # ----------- HIER MOET NOG NAAR GEKEKEN WORDEN. DIT IS VOOR DE B&B -----------
     def Greedy(self, genome):
         """Executes the Greedy algorithm"""
         mirandaGenome = [i for i in range(len(genome))]
@@ -233,6 +220,5 @@ class GenomeSequence:
 
         return numberOfMutations
 
-    def LowBound(self):
-        # als we de 0 en de len(genome) uit de Is en Js hebben gehaald is het len(self.Is) + 1
-        return int(len(self.Is) / 2)
+    def LowBound(self, genome):
+        return int(len(self.breakpointPostions) / 2)
