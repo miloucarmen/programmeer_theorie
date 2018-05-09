@@ -25,7 +25,6 @@ class GenomeSequence:
         Js = []
 
         for i in range(len(genome) - 1):
-            print("i equals: ", i)
 
             # check if breakpoint
             if abs(genome[i] - genome[i + 1]) != 1:
@@ -44,10 +43,6 @@ class GenomeSequence:
                 Js.append(i)
                 Is.append(i + 1)
 
-        print("breakpointPairs: ", breakpointPairs)
-        print("breakpointPositions: ", breakpointPositions)
-        print("I's: ", Is)
-        print("J's: ", Js)
         return breakpointPairs, breakpointPositions, Is, Js #, neighbouringNumbers
 
 
@@ -66,8 +61,6 @@ class GenomeSequence:
         # indices i and j
         if abs(self.genome[j + 1] - self.genome[i]) == 1:
             eliminatedRightBreakpoint = True
-
-        print(eliminatedLeftBreakpoint + eliminatedRightBreakpoint)
 
         # return the sum of the bools to get the total number of breakpoints
         # that will be eliminated when reversing with indices i and j (this number will
@@ -94,7 +87,7 @@ class GenomeSequence:
         return genomeStart + genomeMutated + genomeEnd
 
 
-    def Mutate(self, genome, method):
+    def Mutate(self, method):
 
         # declare arrays that store the breakpointPairs pairs that, when reversed,
         # eliminate either 0, 1, or 2 breakpointPairs in the genome
@@ -114,12 +107,12 @@ class GenomeSequence:
         # execute all possible reverses, based on the possible Is and Js
         for i in self.Is:
             for j in self.Js:
-                if i != j and i < j and i >= 1 and j <= len(genome) - 2:
+                if i != j and i < j and i >= 1 and j <= len(self.genome) - 2:
 
                     # execute every possible reverse and store the mutated genome
                     # in temporaryGenome and calculate the difference in PHI, incurred by the current mutation,
                     # that is: mutating strip (i,j)
-                    temporaryGenome = self.Reverse(genome, i, j)
+                    temporaryGenome = self.Reverse(i, j)
                     deltaPHI = self.CalcDeltaPHI(i, j)
 
                     if method == "Greedy":
@@ -141,8 +134,8 @@ class GenomeSequence:
                             # you don't want to do anything
                             if deltaPHI == 2:
 
-                                # check whether a descending strip was found
-                                if temporaryGenome[i - 1] > temporaryGenome[i] or temporaryGenome[j] > temporaryGenome[j + 1]:
+                                # check whether a descending strip is created after reversing i,j
+                                if temporaryGenome[i - i] > temporaryGenome[i] or temporaryGenome[j] > temporaryGenome[j + 1]:
 
                                     # if descending AND deltaPHI = 2, we've found our best option already!
                                     return temporaryGenome
@@ -154,8 +147,8 @@ class GenomeSequence:
 
                             if deltaPHI == 1:
 
-                                # check whether a descending strip was found
-                                if temporaryGenome[i - 1] > temporaryGenome[i] or temporaryGenome[j] > temporaryGenome[j + 1]:
+                                # check whether a descending strip is created after reversing i,j
+                                if temporaryGenome[i - i] > temporaryGenome[i] or temporaryGenome[j] > temporaryGenome[j + 1]:
 
                                     # if so, store the option and continue revising the
                                     # other options
@@ -168,8 +161,8 @@ class GenomeSequence:
 
                             if deltaPHI == 0:
 
-                                # check whether a descending strip was found
-                                if temporaryGenome[i - 1] > temporaryGenome[i] or temporaryGenome[j] > temporaryGenome[j + 1]:
+                                # check whether a descending strip is created after reversing i,j
+                                if temporaryGenome[i - i] > temporaryGenome[i] or temporaryGenome[j] > temporaryGenome[j + 1]:
 
                                     # if so, store the option and continue revising the
                                     # other options
@@ -206,7 +199,7 @@ class GenomeSequence:
 
             # execute the first posssible option, because this is now the best one!
             # (because descending options come first in the array)
-            return self.Reverse(genome, mutateOptions[0][0], mutateOptions[0][1])
+            return self.Reverse(mutateOptions[0][0], mutateOptions[0][1])
 
 
 
@@ -214,19 +207,6 @@ class GenomeSequence:
         # if method is B&B, return all options
         else:
             return eliminate_2_breakpoint, eliminate_1_breakpoint, eliminate_0_breakpoint, eliminate_min_1_breakpoint, eliminate_min_2_breakpoint
-
-
-     def Update(self, genome, i, j):
-        # breakpointPairs, self.breakpointPostions, self.Is, self.Js = self.createBreakpointList(genome)
-        mutatedGenome = self.Mutate(genome, i, j)
-        # ittereerd door breakpoints 
-        for q in range(j + 1):
-            if self.breakpointPostions[q] > i and self.breakpointPostions[q] < j:
-                # veranderd breakpointpostions naar hun nieuwe locatie
-                self.breakpointPostions[q]  = j - q + i
-            if self.breakpointPostions[q] == i:
-                if abs(mutatedGenome[i-1] - mutatedGenome[i-2]) == 1 and abs(mutatedGenome[i] - mutatedGenome[i - 1]) == 1:
-                    self.breakpointPostions.remove[q - 1]
 
 
     # ----------- HIER MOET NOG NAAR GEKEKEN WORDEN. DIT IS VOOR DE B&B -----------

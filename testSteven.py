@@ -5,6 +5,7 @@ genome = [0, 2, 1, 25, 20, 19, 22, 23, 24, 11, 10, 7, 6, 5, 4, 3, 21, 17, 16, 15
 print("The length of the genome equals: ", len(genome))
 print("Element 0 equals: ", genome[0])
 print("Element 26 equals: ", genome[26])
+print("Element len(genome) - 2 equals: ", genome[len(genome) - 2])
 
 genome = helpersSteven.GenomeSequence(genome)
 Is = genome.Is
@@ -18,7 +19,7 @@ print("The temporary genome is: ", temp)
 for i in Is:
     for j in Js:
         if i != j and i < j and i >= 1 and j <= len(genome.genome) - 2:
-            genome.CheckPHI(i, j)
+            genome.CalcDeltaPHI(i, j)
 
 
 
