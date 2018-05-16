@@ -1,5 +1,4 @@
-import helpersMax
-import helpersSteven
+import helpersSteven_MAIL as helpersSteven
 from random import shuffle
 
 def randomMutation(testLength):
@@ -7,47 +6,111 @@ def randomMutation(testLength):
     shuffle(middleGenome)
     return [0] + middleGenome + [testLength]
 
-current = [0] * 19
+current = [0] * 10
 best = []
 #melanoGenome = [0,23,1,2,11,24,22,19,6,10,7,25,20,5,8,18,12,13,14,15,16,17,21,3,4,9,26]
-#melanoGenome = [0,11,2,17,8,13,3,14,10,15,5,7,16,1,12,4,6,9,18]
-melanoGenome = randomMutation(10)
-gen = helpersSteven.GenomeSequence(melanoGenome)
+melanoGenome = randomMutation(9)
+
+genomeObject = helpersSteven.GenomeSequence(melanoGenome)
 mirandaGenome = [i for i in range(len(melanoGenome))]
-print(melanoGenome)
+
 # grafiek maken met verschillende lengtes van melanoGenome -> line op fitten met voorspellingen kijken of of klopt
-# verschillende breakpoints in de grafiek? -> difficulty? 
-# branch and bound combi met beam search -> ipv checken naar oplossing, checken voor 2 of 3 lagen buiten oplossing? 
-# beam search met voorafbepaalde state space 
-# bound vanaf 0 en dan omhoog?
-def BnB(genomeObj, depth, bound, current, best):
-    print('a')
-    print(genomeObj.genome)
+# verschillende breakpoints in de grafiek? -> difficulty?
+# branch and upperBound combi met beam search -> ipv checken naar oplossing, checken voor 2 of 3 lagen buiten oplossing?
+# beam search met voorafbepaalde state space
+# upperBound vanaf 0 en dan omhoog?
+
+def BnB(genomeObj, depth, upperBound, current, best):
+##print("Branch and Bound was started!")
+
+    #print("Depth: ", depth)
+    #print("upperBound: ", upperBound)
+    #print("Current: ", current)
+    #print("Best: ", best)
+
+    #print("Our current genome looks like this: ", genomeObj.genome)
     if genomeObj.genome == mirandaGenome:
 
-        if depth <= bound:
-            best = []
-            bound, best = depth, current
-            print(bound)
-            print(best)
-            return bound, current, best
-    else:
-        #checken of 0 moves hier lang duren
-        for options in genomeObj.Mutate(genomeObj.genome, "B&B"):
-            for option in options:
-                lowBound = genomeObj.LowBound() + depth + 1
+        #print("----------------------------!The genome has been SOLVED!----------------------------")
+        #print("Depth: ", depth)
+        #print("upperBound: ", upperBound)
+        #print("Current: ", current)
+        #print("Best: ", best)
 
-                # voor de bound tellen hoeveel 1 moves er worden gemaakt in de greedy, dit laat de maximum improvement zien
-                # als je altijd 1 breakpoint weghaalt is de lower bound / 2 (hierom dus die / 2)
-                if lowBound < bound: 
-                    current[depth] = (option[0], option[1])
-                    genomeObj.genome = genomeObj.Reverse(option[0], option[1])
-                    genomeObj.UpdateIandJ(option[0], option[1])
-                    bound, current, best = BnB(genomeObj, depth + 1, bound, current, best)
-        return bound, current, best
-# get the upper bound from Greedy
-#bound = helpersMax.Greedy(melanoGenome)
-# print(bound)
-print(gen.genome)
-BnB(gen, 0, 16, current, best)
-print(melanoGenome)
+        if depth <= upperBound:
+            best = []
+            upperBound, best = depth, current
+            print("Depth: ", depth)
+            print("upperBound: ", upperBound)
+            print("Current: ", current)
+            print("Best: ", best)
+
+            return upperBound, current, best
+
+
+    else:
+        #print("optionList: ", genomeObj.Mutate("B&B"))
+        print("breakpoint pairs", genomeObj.breakpointPairs)
+        print("genome", genomeObj.genome)
+        allOptions = genomeObj.Mutate("B&B")
+        print(allOptions)
+        prevPoints = 0
+        for optionList in range(len(allOptions)):
+            genomeObj.breakpointPairs = genomeObj.breakpointPairs - abs(optionList - 2) + prevPoints
+            prevPoints = abs(optionList - 2)
+            for option in allOptions[optionList]:
+                #print("option: ", option)
+
+                lowerBound = genomeObj.LowerBound() + depth 
+                #print("lowerBound is set to: ", lowerBound)
+                #print("upperBound was already equal to: ", upperBound)
+
+                # check if lowerBound is less OR equal than upperBound.
+                # (we use leq, because the challenge is: if there are MULTIPLE best solutions, compare them)
+                if lowerBound <= upperBound:
+                    i, j = option[0], option[1]
+                    #print("i equals: ", i)
+                    #print("j equals: ", j)
+
+                    #print("Depth: ", depth)
+                    #print("upperBound: ", upperBound)
+                    #print("Current: ", current)
+                    #print("Best: ", best)
+                    current[depth] = (i, j)
+
+                    #print("After editing current[depth], current now equals: ", current)
+
+                    genomeObj.genome = genomeObj.Reverse(i, j)
+
+                    #print("After reversing the genome now equals: ", genomeObj.genome)
+
+                    genomeObj.UpdateBreakpointList(i, j)
+
+                    #print("Our breakpointlist is updated and equals: ", genomeObj.breakpointList)
+
+                    upperBound, current, best = BnB(genomeObj, depth + 1, upperBound, current, best)
+
+                    genomeObj.genome = genomeObj.Reverse(i,j)
+                    genomeObj.UpdateBreakpointList(i, j)
+                    genomeObj.breakpointPairs = genomeObj.breakpointPairs + abs(2 - optionList)
+
+                    #print("Our current genome is: einde ", genomeObj.genome)
+                    #print("Depth: ", depth)
+                    #print("upperBound: ", upperBound)
+                    #print("Current: ", current)
+                    #print("Best: ", best)
+
+        return upperBound, current, best
+
+upperBound, current, best = BnB(genomeObject, 0, 10, current, best)
+
+best = best[:upperBound]
+print("Final best: ",best)
+print("Melano: ", melanoGenome)
+
+genom = helpersSteven.GenomeSequence(melanoGenome)
+for mutations in best:
+    genom.genome = genom.Reverse(mutations[0], mutations[1])
+print(genom.genome)
+
+https://gyazo.com/b58c349ce6e56abe6fd3dff1dd5422cf
