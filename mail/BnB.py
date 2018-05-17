@@ -9,8 +9,8 @@ def randomMutation(testLength):
 
 current = [0] * 32
 best = []
-#melanoGenome = [0,23,1,2,11,24,22,19,6,10,7,25,20,5,8,18,12,13,14,15,16,17,21,3,4,9,26]
-melanoGenome = randomMutation(20)
+melanoGenome = [0,23,1,2,11,24,22,19,6,10,7,25,20,5,8,18,12,13,14,15,16,17,21,3,4,9,26]
+#melanoGenome = randomMutation(20)
 
 genomeObject = helpersSteven.GenomeSequence(melanoGenome)
 mirandaGenome = [i for i in range(len(melanoGenome))]
@@ -42,10 +42,10 @@ def BnB(genomeObj, depth, upperBound, current, best, breakpointPairs):
             best = []
             upperBound, best = depth, current
 
-            print("Depth: ", depth)
+            # print("Depth: ", depth)
             print("upperBound: ", upperBound)
-            print("Current: ", current)
-            print("Best: ", best)
+            # print("Current: ", current)
+            #print("Best: ", best)
 
             best = copy.copy(best)
             return upperBound, current, best
@@ -106,7 +106,7 @@ def BnB(genomeObj, depth, upperBound, current, best, breakpointPairs):
     return upperBound, current, best
 
 breakpointPairs = genomeObject.breakpointPairs
-upperBound, current, best = BnB(genomeObject, 0, 30, current, best, breakpointPairs)
+upperBound, current, best = BnB(genomeObject, 0, 13, current, best, breakpointPairs)
 
 best = best[:upperBound]
 print("Final best: ",best)
