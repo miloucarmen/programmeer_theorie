@@ -122,6 +122,18 @@ class GenomeSequence:
         return genomeStart + genomeMutated + genomeEnd
 
 
+    # def trimOptionsLow(self, currentIndex):
+    #     if currentIndex < len(self.breakpointList):
+    #         if self.genome[currentIndex] == currentIndex:
+    #             self.trimOptionsLow(currentIndex + 1)
+    #             del self.breakpointList[self.breakpointList.index(currentIndex)]
+
+    # def trimOptionsHigh(self, currentIndex):
+    #     if currentIndex > 0:
+    #         if self.genome[currentIndex] == currentIndex:
+    #             self.trimOptionsHigh(currentIndex - 1)
+    #             del self.breakpointList[self.breakpointList.index(currentIndex)]
+
     def Mutate(self, method):
 
         # declare arrays that store the breakpointPairs pairs that, when reversed,
@@ -140,6 +152,11 @@ class GenomeSequence:
         deltaPHIbest = 0
         # print(self.breakpointList)
         # execute all possible reverses, based on the possible Is and Js
+
+        # print("Breakpointlist before trim: ", self.breakpointList)
+        # self.trimOptionsLow(1)
+        # self.trimOptionsHigh(len(self.breakpointList) - 1)
+        
         for i in self.breakpointList:
             for j in self.breakpointList:
                 if i != j and i < j and i >= 1 and j < len(self.genome) - 1:
