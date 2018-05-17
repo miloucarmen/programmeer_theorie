@@ -1,7 +1,7 @@
 import helpersSteven_MAIL as helpersSteven
 
-geno = [0, 9, 4, 1, 5, 2, 6, 7, 8, 3, 10]
-mutationList = [(2, 8), (5, 6), (6, 8), (7, 9), (1, 9)]
+geno = [0,23,1,2,11,24,22,19,6,10,7,25,20,5,8,18,12,13,14,15,16,17,21,3,4,9,26]
+mutationList = [(8, 12), (14, 24), (1, 4), (1, 3), (3, 15), (7, 8), (9, 12), (12, 25), (9, 22), (10, 21), (8, 11), (8, 20), (14, 18), (8, 17)]
 genom = helpersSteven.GenomeSequence(geno)
 for mutations in mutationList:
     genom.genome = genom.Reverse(mutations[0], mutations[1])
