@@ -1,3 +1,6 @@
+import math
+import scipy
+
 # we moeten in de presentatie goed onderbouwen dat een strip doorbreken NOOIT goed is, ik twijfel hierover?
 class GenomeSequence:
 
@@ -5,44 +8,99 @@ class GenomeSequence:
 
         self.genome = genome
         # execute createBreakpointlist when initializing
-        self.Is, self.Js = self.createBreakpointList(genome)
+        self.breakpointList, self.breakpointPairs = self.createBreakpointList(genome)
 
     def createBreakpointList(self, genome):
         # declare arrays that store indices that may be an i or a j
-        Is = []
-        Js = []
-
-        for i in range(len(genome) - 1):
+        breakpointList = []
+        breakpointPairs = 0
+        for i in range(0, len(genome) - 1):
             # check if breakpoint
             if abs(genome[i] - genome[i + 1]) != 1:
+                breakpointPairs = breakpointPairs + 1
                 # specify what may be a possible i or j
-                Js.append(i)
-                Is.append(i + 1)
+                if i > 0 and i < len(genome) - 1:
+                    breakpointList.append(i)
+                if i < len(genome) - 2:
+                    breakpointList.append(i + 1)
 
-        # print("I's: ", Is)
-        # print("J's: ", Js)
-        return Is, Js 
+        breakpointList = list(set(breakpointList))
+
+        # print("initial", breakpointList)
+
+        return breakpointList, breakpointPairs
+
+    def UpdateBreakpointList(self, i, j):
+        # https://gyazo.com/9389e6324f980a2bee57a173f5358a91  <--- dit geval eruit halen
+        # print("old", self.breakpointList)
+        newList = []
+
+        for m in [i - 1, i, j, j + 1]:
+            if abs(self.genome[m - 1] - self.genome[m]) == 1:
+                if m < len(self.genome) - 1:
+                    if m in self.breakpointList and m not in newList:
+                        self.breakpointList.remove(m)
+
+                if m - 1 > 0:
+                    if m - 1 in self.breakpointList and m - 1 not in newList:
+                        if m - 2 >= 0 and abs(self.genome[m - 2] - self.genome[m - 1]) == 1:
+                            self.breakpointList.remove(m - 1)
+            else:
+                if m - 1 > 0:
+                    self.breakpointList.append(m - 1)
+                    newList.append(m - 1)
+                if m > 0:
+                    self.breakpointList.append(m)
+                    newList.append(m)
+
+            if m + 1 < len(self.genome):
+                if abs(self.genome[m] - self.genome[m + 1]) == 1:
+                    if m in self.breakpointList and m not in newList:
+
+                        self.breakpointList.remove(m)
+                    if m + 1 in self.breakpointList and m + 1 not in newList:
+                        if m + 2 < len(self.genome) and abs(self.genome[m + 2] - self.genome[m + 1]) == 1:
+                            self.breakpointList.remove(m + 1)
+                else:
+                    if m + 1 < len(self.genome) - 1:
+                        self.breakpointList.append(m + 1)
+                        newList.append(m + 1)
+                    self.breakpointList.append(m)
+                    newList.append(m)
+
+
+        self.breakpointList = list(set(self.breakpointList))
+        # print("new", self.breakpointList)
+
 
     def CalcDeltaPHI(self, i, j):
 
         # define bools to check if breakpoints are eliminated
-        eliminatedLeftBreakpoint = False
-        eliminatedRightBreakpoint = False
+        eliminatedLeftBreakpoint = 0
+        eliminatedRightBreakpoint = 0
+        breakleftStrip = 0
+        breakrightStrip = 0
+
+        if abs(self.genome[i - 1] - self.genome[i]) == 1:
+            breakleftStrip = -1
+
+        if abs(self.genome[j + 1] - self.genome[j]) == 1:
+            breakrightStrip = -1
 
         # check if left breakpoint will be eliminated when reversing with
         # indices i and j
         if abs(self.genome[i - 1] - self.genome[j]) == 1:
-            eliminatedLeftBreakpoint = True
+            eliminatedLeftBreakpoint = 1
 
         # check if right breakpoint will be eliminated when reversing with
         # indices i and j
         if abs(self.genome[j + 1] - self.genome[i]) == 1:
-            eliminatedRightBreakpoint = True
+            eliminatedRightBreakpoint = 1
 
         # return the sum of the bools to get the total number of breakpoints
         # that will be eliminated when reversing with indices i and j (this number will
         # always be either 0, 1 or 2)
-        return eliminatedLeftBreakpoint + eliminatedRightBreakpoint
+        return eliminatedLeftBreakpoint + eliminatedRightBreakpoint + breakleftStrip + breakrightStrip
 
 
     def Reverse(self, i, j):
@@ -64,7 +122,7 @@ class GenomeSequence:
         return genomeStart + genomeMutated + genomeEnd
 
 
-    def Mutate(self, genome, method):
+    def Mutate(self, method):
 
         # declare arrays that store the breakpointPairs pairs that, when reversed,
         # eliminate either 0, 1, or 2 breakpointPairs in the genome
@@ -80,11 +138,11 @@ class GenomeSequence:
 
         # set the best deltaPHI equal to 0
         deltaPHIbest = 0
-
+        # print(self.breakpointList)
         # execute all possible reverses, based on the possible Is and Js
-        for i in self.Is:
-            for j in self.Js:
-                if i != j and i < j and i >= 1 and j <= len(genome) - 2:
+        for i in self.breakpointList:
+            for j in self.breakpointList:
+                if i != j and i < j and i >= 1 and j < len(self.genome) - 1:
 
                     # execute every possible reverse and store the mutated genome
                     # in temporaryGenome and calculate the difference in PHI, incurred by the current mutation,
@@ -182,58 +240,79 @@ class GenomeSequence:
 
         # if method is B&B, return all options
         else:
+            # print("return", eliminate_2_breakpoint, eliminate_1_breakpoint, eliminate_0_breakpoint)
             return eliminate_2_breakpoint, eliminate_1_breakpoint, eliminate_0_breakpoint#, eliminate_min_1_breakpoint, eliminate_min_2_breakpoint
 
-    def UpdateIandJ(self, i, j):
-        # switch I and J between i and j
-        for k in self.Is[self.Is.index(i):]:
-            if k > i:
-                self.Js.append(k)
-                self.Is.remove(k)
-            elif k == self.Js.index(j):
-                break
-        
-        for l in self.Js[self.Is.index(i):]:
-            if l > i:
-                self.Is.append(l)
-                self.Js.remove(l)
-            elif l == self.Js.index(j):
-                break
+    # def UpdateIandJ(self, i, j):
+    #     print("Is", self.Is)
+    #     print("Js", self.Js)
+    #     print("j", j)
+    #     for k in self.Is[self.Is.index(i):]:
+    #         offset = 0
+    #         if k > i:
+    #             self.Js.append(k)
+    #             self.Is.remove(k)
+    #             offset =+ 1
+    #         elif k == self.Js.index(j - offset):
+    #             break
 
-        for m in [i - 1, i, j, j + 1]:
-            if abs(self.genome[m - 1] - self.genome[m]) == 1:
-                if m in self.Is:
-                    self.Is.remove(m)
-                if m - 1 in self.Js:
-                    self.Js.remove(m - 1)
-            else:
-                self.Js.append(m - 1)
-                self.Is.append(m)
+    #         self.Is = list(set(self.Is))
+    #         self.Js = list(set(self.Js))
 
-            if abs(self.genome[m + 1] - self.genome[m]) == 1:
-                if m + 1 in self.Is:
-                    self.Is.remove(m + 1)
-                if m in self.Js:
-                    self.Js.remove(m)
-            else:
-                self.Js.append(m)
-                self.Is.append(m + 1)
+    #     for l in self.Js[self.Is.index(i):]:
+    #         offset = 0
+    #         if l > i:
+    #             self.Is.append(l)
+    #             self.Js.remove(l)
+    #             offset =+ 1
+    #         elif l == self.Js.index(j - offset):
+    #             break
 
-        self.Is = list(set(self.Is))
-        self.Js = list(set(self.Js))
+    #         self.Is = list(set(self.Is))
+    #         self.Js = list(set(self.Js))
+
+    #     for m in [i - 1, i, j, j + 1]:
+    #         if abs(self.genome[m - 1] - self.genome[m]) == 1:
+    #             if m in self.Is:
+    #                 self.Is.remove(m)
+    #             if m - 1 in self.Js:
+    #                 self.Js.remove(m - 1)
+    #         else:
+    #             self.Js.append(m - 1)
+    #             self.Is.append(m)
+    #         if self.genome[m] != self.genome[-1]:
+    #             if abs(self.genome[m + 1] - self.genome[m]) == 1:
+    #                 if m + 1 in self.Is:
+    #                     self.Is.remove(m + 1)
+    #                 if m in self.Js:
+    #                     self.Js.remove(m)
+    #             else:
+    #                 self.Js.append(m)
+    #                 self.Is.append(m + 1)
+
+    #     self.Is = list(set(self.Is))
+    #     self.Js = list(set(self.Js)) # checken of duplicates hiervan wegkunnen
 
     def Greedy(self, genome):
         """Executes the Greedy algorithm"""
+
+        print("GREEDY!")
+
+        # mirandaGenome is the genome in ascending order
         mirandaGenome = [i for i in range(len(genome))]
-        # mirandaGenome = [0,1,2,3,4]
+
         numberOfMutations = 0
 
-        while genome != mirandaGenome:
-            numberOfMutations += 1
-            genome = self.Mutate(genome, "Greedy")
+        # while genome != mirandaGenome:
+        #     numberOfMutations += 1
+        #     genome = self.Mutate(genome, "Greedy")
+        #     print(genome)
 
         return numberOfMutations
+    
+    def lowerBoundPoints(self):
+        scipy.spatial.distance.cdist
 
-    def LowBound(self):
-        # als we de 0 en de len(genome) uit de Is en Js hebben gehaald is het len(self.Is) + 1
-        return int(len(self.Is) / 2)
+def LowerBound(breakpointpairsCurrent):
+    return math.ceil(breakpointpairsCurrent / 2)
+    
