@@ -77,20 +77,20 @@ def BnB(genomeObj, depth, upperBound, current, best, breakpointPairs):
                     print("Depth = 0: ", depth0count, "out of ", len(allOptions[0]) + len(allOptions[1]))
                 if depth == 1:
                     print("-Depth = 1, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
-                if depth == 2:
-                    print("--Depth = 2, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
-                if depth == 3:
-                    print("---Depth = 3, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
-                if depth == 4:
-                    print("----Depth = 4, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
-                if depth == 5:
-                    print("-----Depth = 5, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
-                if depth == 6:
-                    print("------Depth = 6, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
-                if depth == 7:
-                    print("-------Depth = 7, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
-                if depth == 8:
-                    print("--------Depth = 8, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
+                # if depth == 2:
+                #     print("--Depth = 2, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
+                # if depth == 3:
+                #     print("---Depth = 3, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
+                # if depth == 4:
+                #     print("----Depth = 4, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
+                # if depth == 5:
+                #     print("-----Depth = 5, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
+                # if depth == 6:
+                #     print("------Depth = 6, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
+                # if depth == 7:
+                #     print("-------Depth = 7, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
+                # if depth == 8:
+                #     print("--------Depth = 8, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
                 #print("Currently revising from optionList ", optionList, ", ", option)
 
                 # check if lowerBound is less OR equal than upperBound.
