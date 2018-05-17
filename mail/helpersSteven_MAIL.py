@@ -241,7 +241,7 @@ class GenomeSequence:
         # if method is B&B, return all options
         else:
             # print("return", eliminate_2_breakpoint, eliminate_1_breakpoint, eliminate_0_breakpoint)
-            return eliminate_2_breakpoint, eliminate_1_breakpoint#, eliminate_0_breakpoint#, eliminate_min_1_breakpoint, eliminate_min_2_breakpoint
+            return eliminate_2_breakpoint, eliminate_1_breakpoint, eliminate_0_breakpoint#, eliminate_min_1_breakpoint, eliminate_min_2_breakpoint
 
     # def UpdateIandJ(self, i, j):
     #     print("Is", self.Is)
@@ -309,10 +309,9 @@ class GenomeSequence:
         #     print(genome)
 
         return numberOfMutations
-    
+
     def lowerBoundPoints(self):
         scipy.spatial.distance.cdist
 
 def LowerBound(breakpointpairsCurrent):
     return math.ceil(breakpointpairsCurrent / 2)
-    
