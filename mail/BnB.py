@@ -86,23 +86,19 @@ def BnB(genomeObj, depth, upperBound, current, best, breakpointPairs):
                     print("After reversing the genome now equals: ", genomeObj.genome)
 
                     genomeObj.UpdateBreakpointList(i, j)
+                    print("Our breakpointlist is updated and equals: ", genomeObj.breakpointList)
 
-
-                    # print("Our breakpointlist is updated and equals: ", breakpointPairsCurrent)
-                    # print("Our current genome is: einde ", genomeObj.genome)
-                    # print("Depth: ", depth)
-                    # print("upperBound: ", upperBound)
-                    # print("Current: ", current)
-                    # print("Best: ", best)
+                    print("We go deeeeeeeepeeeer")
                     upperBound, current, best = BnB(genomeObj, depth + 1, upperBound, current, best, breakpointPairsCurrent)
+                    print("We're out of depth")
 
                     genomeObj.genome = genomeObj.Reverse(i,j)
                     genomeObj.UpdateBreakpointList(i, j)
-                    #print("Our current genome is: einde ", genomeObj.genome)
-                    #print("Depth: ", depth)
-                    #print("upperBound: ", upperBound)
-                    #print("Current: ", current)
-                    #print("Best: ", best)
+                    print("Our current genome is: einde ", genomeObj.genome)
+                    print("Depth: ", depth)
+                    print("upperBound: ", upperBound)
+                    print("Current: ", current)
+                    print("Best: ", best)
     return upperBound, current, best
 
 breakpointPairs = genomeObject.breakpointPairs
