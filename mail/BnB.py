@@ -9,7 +9,9 @@ def randomMutation(testLength):
 
 current = [0] * 32
 best = []
-# melanoGenome = [0,23,1,2,11,24,22,19,6,10,7,25,20,5,8,18,12,13,14,15,16,17,21,3,4,9,26]
+melanoGenome = [0,23,1,2,11,24,22,19,6,10,7,25,20,5,8,18,12,13,14,15,16,17,21,3,4,9,26]
+#melanoGenome = [0,8,5,7,4,2,6,3,1,9]
+#melanoGenome = randomMutation(12)
 
 melanoGenome = randomMutation(8)
 # melanoGenome = [0, 8, 5, 7, 4, 2, 6, 3, 1, 9]
@@ -37,7 +39,7 @@ def BnB(genomeObj, depth, upperBound, current, best, breakpointPairs):
 
         # print("--------------------------------------!The genome has been SOLVED!--------------------------------------")
 
-        if depth <= upperBound:
+        if depth <= upperBoun
 
             # print("!!A new best has been found!!")
 
@@ -45,8 +47,9 @@ def BnB(genomeObj, depth, upperBound, current, best, breakpointPairs):
             upperBound, best = depth, current
             # print("Updated upperBound: ", upperBound)
             # print("Updated best: ", best)
-
-            # print("Return: upperbound, current, best")
+            genomeObj.counter = genomeObj.counter + 1
+            print(genomeObj.counter)
+           # print("Return: upperbound, current, best")
 
 
             best = copy.copy(best)
@@ -75,7 +78,7 @@ def BnB(genomeObj, depth, upperBound, current, best, breakpointPairs):
                     #     depth0count += 1
                     #     print("Depth = 0: ", depth0count, "out of ", len(allOptions[0]) + len(allOptions[1]))
                     # if depth == 1:
-                        # print("-Depth = 1, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
+                    #     print("-Depth = 1, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
                     # if depth == 2:
                     #     print("--Depth = 2, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
                     # if depth == 3:
@@ -105,7 +108,7 @@ def BnB(genomeObj, depth, upperBound, current, best, breakpointPairs):
 
                     genomeObj.genome = genomeObj.Reverse(i, j)
 
-                    print("After reversing the genome now equals: ", genomeObj.genome)
+                    # print("After reversing the genome now equals: ", genomeObj.genome)
 
                     genomeObj.UpdateBreakpointList(i, j)
                     # print("Our breakpointlist is updated and equals: ", genomeObj.breakpointList)
