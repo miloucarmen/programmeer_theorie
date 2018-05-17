@@ -309,10 +309,9 @@ class GenomeSequence:
         #     print(genome)
 
         return numberOfMutations
-    
+
     def lowerBoundPoints(self):
         scipy.spatial.distance.cdist
 
 def LowerBound(breakpointpairsCurrent):
     return math.ceil(breakpointpairsCurrent / 2)
-    

@@ -21,8 +21,12 @@ mirandaGenome = [i for i in range(len(melanoGenome))]
 # beam search met voorafbepaalde state space
 # upperBound vanaf 0 en dan omhoog?
 
+
 def BnB(genomeObj, depth, upperBound, current, best, breakpointPairs):
-##print("Branch and Bound was started!")
+
+    depth0count = 0
+
+    #print("----------Branch and Bound was started-----------")
 
     #print("Depth: ", depth)
     #print("upperBound: ", upperBound)
@@ -32,15 +36,18 @@ def BnB(genomeObj, depth, upperBound, current, best, breakpointPairs):
     #print("Our current genome looks like this: ", genomeObj.genome)
     if genomeObj.genome == mirandaGenome:
 
-        #print("----------------------------!The genome has been SOLVED!----------------------------")
-        #print("Depth: ", depth)
-        #print("upperBound: ", upperBound)
-        #print("Current: ", current)
-        #print("Best: ", best)
+        #print("--------------------------------------!The genome has been SOLVED!--------------------------------------")
 
         if depth <= upperBound:
+
+            #print("!!A new best has been found!!")
+
             best = []
             upperBound, best = depth, current
+            #print("Updated upperBound: ", upperBound)
+            #print("Updated best: ", best)
+
+            #print("Return: upperbound, current, best")
 
             # print("Depth: ", depth)
             print("upperBound: ", upperBound)
@@ -52,20 +59,39 @@ def BnB(genomeObj, depth, upperBound, current, best, breakpointPairs):
 
 
     else:
-        #print("optionList: ", genomeObj.Mutate("B&B"))
-        # print("breakpoint pairs", breakpointPairs)
-        # print("genome", genomeObj.genome)
+        #print("The genome has not been solved yet.")
+
         allOptions = genomeObj.Mutate("B&B")
-        # print(allOptions)
         prevPoints = 0
+        #print("The optionList equals: ", allOptions)
+
         for optionList in range(len(allOptions)):
             breakpointPairsCurrent = breakpointPairs - abs(optionList - 2)
-            lowerBound = helpersSteven.LowerBound(breakpointPairsCurrent) + depth 
+
+            lowerBound = helpersSteven.LowerBound(breakpointPairsCurrent) + depth
 
             for option in allOptions[optionList]:
-                #print("option: ", option)
-                #print("lowerBound is set to: ", lowerBound)
-                #print("upperBound was already equal to: ", upperBound)
+
+                if depth == 0:
+                    depth0count += 1
+                    print("Depth = 0: ", depth0count, "out of ", len(allOptions[0]) + len(allOptions[1]))
+                if depth == 1:
+                    print("-Depth = 1, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
+                if depth == 2:
+                    print("--Depth = 2, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
+                if depth == 3:
+                    print("---Depth = 3, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
+                if depth == 4:
+                    print("----Depth = 4, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
+                if depth == 5:
+                    print("-----Depth = 5, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
+                if depth == 6:
+                    print("------Depth = 6, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
+                if depth == 7:
+                    print("-------Depth = 7, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
+                if depth == 8:
+                    print("--------Depth = 8, # of options here are: ", len(allOptions[0]) + len(allOptions[1]))
+                #print("Currently revising from optionList ", optionList, ", ", option)
 
                 # check if lowerBound is less OR equal than upperBound.
                 # (we use leq, because the challenge is: if there are MULTIPLE best solutions, compare them)
@@ -74,10 +100,6 @@ def BnB(genomeObj, depth, upperBound, current, best, breakpointPairs):
                     #print("i equals: ", i)
                     #print("j equals: ", j)
 
-                    #print("Depth: ", depth)
-                    #print("upperBound: ", upperBound)
-                    #print("Current: ", current)
-                    #print("Best: ", best)
                     current[depth] = (i, j)
 
                     #print("After editing current[depth], current now equals: ", current)
@@ -87,14 +109,11 @@ def BnB(genomeObj, depth, upperBound, current, best, breakpointPairs):
                     #print("After reversing the genome now equals: ", genomeObj.genome)
 
                     genomeObj.UpdateBreakpointList(i, j)
+                    #print("Our breakpointlist is updated and equals: ", genomeObj.breakpointList)
 
-                    # print("Our breakpointlist is updated and equals: ", breakpointPairsCurrent)
-                    # print("Our current genome is: einde ", genomeObj.genome)
-                    # print("Depth: ", depth)
-                    # print("upperBound: ", upperBound)
-                    # print("Current: ", current)
-                    # print("Best: ", best)
+                    #print("We go deeeeeeeepeeeer")
                     upperBound, current, best = BnB(genomeObj, depth + 1, upperBound, current, best, breakpointPairsCurrent)
+                    #print("We're out of depth")
 
                     genomeObj.genome = genomeObj.Reverse(i,j)
                     genomeObj.UpdateBreakpointList(i, j)
@@ -109,10 +128,10 @@ breakpointPairs = genomeObject.breakpointPairs
 upperBound, current, best = BnB(genomeObject, 0, 13, current, best, breakpointPairs)
 
 best = best[:upperBound]
-print("Final best: ",best)
-print("Melano: ", melanoGenome)
+#print("Final best: ",best)
+#print("Melano: ", melanoGenome)
 
 genom = helpersSteven.GenomeSequence(melanoGenome)
 for mutations in best:
     genom.genome = genom.Reverse(mutations[0], mutations[1])
-print(genom.genome)
+#print(genom.genome)
