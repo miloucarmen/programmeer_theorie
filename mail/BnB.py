@@ -10,7 +10,7 @@ def randomMutation(testLength):
 current = [0] * 32
 best = []
 #melanoGenome = [0,23,1,2,11,24,22,19,6,10,7,25,20,5,8,18,12,13,14,15,16,17,21,3,4,9,26]
-melanoGenome = randomMutation(5)
+melanoGenome = randomMutation(20)
 
 genomeObject = helpersSteven.GenomeSequence(melanoGenome)
 mirandaGenome = [i for i in range(len(melanoGenome))]
@@ -42,10 +42,10 @@ def BnB(genomeObj, depth, upperBound, current, best, breakpointPairs):
             best = []
             upperBound, best = depth, current
 
-            # print("Depth: ", depth)
-            # print("upperBound: ", upperBound)
-            # print("Current: ", current)
-            # print("Best: ", best)
+            print("Depth: ", depth)
+            print("upperBound: ", upperBound)
+            print("Current: ", current)
+            print("Best: ", best)
 
             best = copy.copy(best)
             return upperBound, current, best
@@ -60,7 +60,7 @@ def BnB(genomeObj, depth, upperBound, current, best, breakpointPairs):
         prevPoints = 0
         for optionList in range(len(allOptions)):
             breakpointPairsCurrent = breakpointPairs - abs(optionList - 2)
-            lowerBound = helpersSteven.LowerBound(breakpointPairsCurrent) + depth + 1
+            lowerBound = helpersSteven.LowerBound(breakpointPairsCurrent) + depth 
 
             for option in allOptions[optionList]:
                 #print("option: ", option)
@@ -88,13 +88,12 @@ def BnB(genomeObj, depth, upperBound, current, best, breakpointPairs):
 
                     genomeObj.UpdateBreakpointList(i, j)
 
-                    print("Our breakpointlist is updated and equals: ", breakpointPairsCurrent)
-                    print("Our current genome is: einde ", genomeObj.genome)
-                    print("Depth: ", depth)
-                    print("upperBound: ", upperBound)
-                    print("Current: ", current)
-                    print("Best: ", best)
-                    print(genomeObj)
+                    # print("Our breakpointlist is updated and equals: ", breakpointPairsCurrent)
+                    # print("Our current genome is: einde ", genomeObj.genome)
+                    # print("Depth: ", depth)
+                    # print("upperBound: ", upperBound)
+                    # print("Current: ", current)
+                    # print("Best: ", best)
                     upperBound, current, best = BnB(genomeObj, depth + 1, upperBound, current, best, breakpointPairsCurrent)
 
                     genomeObj.genome = genomeObj.Reverse(i,j)
@@ -104,9 +103,7 @@ def BnB(genomeObj, depth, upperBound, current, best, breakpointPairs):
                     #print("upperBound: ", upperBound)
                     #print("Current: ", current)
                     #print("Best: ", best)
-                else:
-                    break
-        return upperBound, current, best
+    return upperBound, current, best
 
 breakpointPairs = genomeObject.breakpointPairs
 upperBound, current, best = BnB(genomeObject, 0, 30, current, best, breakpointPairs)
