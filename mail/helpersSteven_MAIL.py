@@ -9,6 +9,7 @@ class GenomeSequence:
         self.genome = genome
         # execute createBreakpointlist when initializing
         self.breakpointList, self.breakpointPairs = self.createBreakpointList(genome)
+        self.counter = 0
 
     def createBreakpointList(self, genome):
         # declare arrays that store indices that may be an i or a j
@@ -120,6 +121,17 @@ class GenomeSequence:
 
         # return the mutated genome
         return genomeStart + genomeMutated + genomeEnd
+
+    
+    def trimOptionsLow(self, currentIndex):
+        if self.breakpointList[currentIndex] == currentIndex:
+            self.trimOptionsLow(currentIndex + 1)
+            del self.breakpointList[self.breakpointList.index(currentIndex)]
+
+    def trimOptionsHigh(self, currentIndex):
+        if self.breakpointList[currentIndex] == currentIndex:
+            self.trimOptionsHigh(currentIndex - 1)
+            del self.breakpointList[self.breakpointList.index(currentIndex)]
 
 
     def Mutate(self, method):
@@ -241,7 +253,7 @@ class GenomeSequence:
         # if method is B&B, return all options
         else:
             # print("return", eliminate_2_breakpoint, eliminate_1_breakpoint, eliminate_0_breakpoint)
-            return eliminate_2_breakpoint, eliminate_1_breakpoint, eliminate_0_breakpoint#, eliminate_min_1_breakpoint, eliminate_min_2_breakpoint
+            return eliminate_2_breakpoint, eliminate_1_breakpoint#, eliminate_0_breakpoint#, eliminate_min_1_breakpoint, eliminate_min_2_breakpoint
 
     # def UpdateIandJ(self, i, j):
     #     print("Is", self.Is)
